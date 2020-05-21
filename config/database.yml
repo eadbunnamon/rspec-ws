@@ -1,0 +1,17 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: "rspec_ws_development"
+  pool: 5
+  username: postgres
+  password: "12345"
+  timeout: 5000
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: "rspec_ws_test"
+  pool: 5
+  username: postgres
+  password: "12345"
+  timeout: 5000
