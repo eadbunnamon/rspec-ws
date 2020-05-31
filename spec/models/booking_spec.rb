@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Booking, type: :model do
+  before do
+    @time_now = Time.zone.parse('2020-01-01 19:30:21')
+    allow(Time).to receive(:now).and_return(@time_now)
+  end
+
   let(:room) { FactoryBot.create(:room) }
   let(:booking) do
     FactoryBot.create(:booking, 
@@ -25,6 +30,7 @@ RSpec.describe Booking, type: :model do
   context "before create" do
     it "encrypt booking number" do
       expect(EncryptingService.decrypt(booking.booking_number)).to eq("A0001")
+      expect(booking.start_at.to_datetime).to eq(@time_now)
     end
   end
 end
