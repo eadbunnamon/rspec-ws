@@ -11,10 +11,28 @@ RSpec.describe Booking, type: :model do
     FactoryBot.create(:booking, 
       room: room,
       start_at: Time.now, 
-      end_at: Time.now + 1.year, 
+      end_at: Time.now + 3.days, 
       booking_name: "Siri Bunnamon", 
       booking_number: "A0001")
   end
+
+  let(:past_booking) {
+    FactoryBot.create(:booking, 
+      room: room,
+      start_at: Time.now - 3.days, 
+      end_at: Time.now - 1.day, 
+      booking_name: "Siri Bunnamon", 
+      booking_number: "A0002")
+  }
+
+  let(:upcoming_booking) {
+    FactoryBot.create(:booking, 
+      room: room,
+      start_at: Time.now + 1.day, 
+      end_at: Time.now + 3.days, 
+      booking_name: "Siri Bunnamon", 
+      booking_number: "A0003")
+  }
 
   context "relationships" do
     it { should belong_to(:room) }
@@ -31,6 +49,26 @@ RSpec.describe Booking, type: :model do
     it "encrypt booking number" do
       expect(EncryptingService.decrypt(booking.booking_number)).to eq("A0001")
       expect(booking.start_at.to_datetime).to eq(@time_now)
+    end
+  end
+
+  context "scope" do
+    before do
+      booking
+      past_booking
+      upcoming_booking
+    end
+
+    it "past" do
+      expect(Booking.past).to match_array([past_booking])
+    end
+
+    it "staying" do
+      expect(Booking.staying).to match_array([booking])
+    end
+
+    it "upcoming" do
+      expect(Booking.upcoming).to match_array([upcoming_booking])
     end
   end
 end
